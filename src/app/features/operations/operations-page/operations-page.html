@@ -1,4 +1,3 @@
-<p>operations-page works!</p>
 <a class="skip-link" href="#flight-list">Skip to flight list</a>
 
 <div class="shell">
@@ -26,14 +25,18 @@
         <div class="placeholder">Arrived</div>
       </div>
       <section class="map-area" aria-label="Flight map">
-        <div class="placeholder">Map goes here</div>
+        <app-flight-map
+          [flights]="flights()"
+          [airports]="airports()"
+          (flightSelect)="onFlightSelect($event)"
+        />
       </section>
     </main>
 
     <!-- RIGHT: details + needs attention -->
     <aside class="panel right" aria-label="Flight details">
       <section class="block">
-        <div class="placeholder">Flight details go here</div>
+        <div class="placeholder">Selected: {{ selectedId() ?? 'none' }}</div>
       </section>
       <section class="block">
         <h2 class="block-title">Needs attention</h2>

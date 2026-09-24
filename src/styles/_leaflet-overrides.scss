@@ -1,0 +1,136 @@
+// Map background + font
+.leaflet-container {
+  background: var(--bg);
+  font-family: var(--font-sans);
+}
+
+// Zoom buttons + attribution to match the dark theme
+.leaflet-bar a {
+  background: var(--surface);
+  color: var(--text);
+  border-bottom-color: var(--border);
+
+  &:hover {
+    background: var(--surface-2);
+  }
+}
+
+.leaflet-control-attribution {
+  background: color-mix(in srgb, var(--surface) 80%, transparent) !important;
+  color: var(--text-muted) !important;
+
+  a {
+    color: var(--text-muted) !important;
+  }
+}
+
+// ---- Plane markers ----
+.flight-icon {
+  background: none;
+  border: none;
+
+  .plane {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    transition: transform 0.3s ease;
+  }
+
+  svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 60%));
+  }
+
+  &.is-enroute {
+    color: var(--status-enroute);
+  }
+  &.is-delayed {
+    color: var(--status-delayed);
+  }
+  &.is-arrived {
+    color: var(--status-arrived);
+  }
+  &.is-boarding {
+    color: var(--status-boarding);
+  }
+  &.is-scheduled {
+    color: var(--status-scheduled);
+  }
+}
+
+// ---- Airport markers ----
+.airport-icon {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+
+  .ap-dot {
+    width: 8px;
+    height: 8px;
+    border: 1.5px solid var(--text-muted);
+    border-radius: 2px;
+    background: var(--bg);
+  }
+
+  .ap-code {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+}
+
+// ---- Tooltips ----
+.leaflet-tooltip.flight-tooltip {
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 40%);
+  font-size: var(--fs-sm);
+
+  &.leaflet-tooltip-top::before {
+    border-top-color: var(--surface-2);
+  }
+
+  .ft-head {
+    display: flex;
+    gap: var(--sp-2);
+    align-items: baseline;
+    font-family: var(--font-mono);
+  }
+
+  .ft-callsign,
+  .ft-route {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+  }
+
+  .ft-status {
+    margin-top: var(--sp-1);
+    font-weight: 600;
+    font-size: var(--fs-xs);
+
+    &.is-enroute {
+      color: var(--status-enroute);
+    }
+    &.is-delayed {
+      color: var(--status-delayed);
+    }
+    &.is-arrived {
+      color: var(--status-arrived);
+    }
+    &.is-boarding {
+      color: var(--status-boarding);
+    }
+    &.is-scheduled {
+      color: var(--status-scheduled);
+    }
+  }
+}
