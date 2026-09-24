@@ -1,1 +1,57 @@
 /* You can add global styles to this file, and also import other style files */
+@use './styles/tokens';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+// Visible keyboard focus everywhere (accessibility)
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+// Hidden until focused, for keyboard users
+.skip-link {
+  position: absolute;
+  left: var(--sp-2);
+  top: -40px;
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius);
+  z-index: 1000;
+
+  &:focus {
+    top: var(--sp-2);
+  }
+}
+
+// Respect users who prefer less motion
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
