@@ -1,1 +1,44 @@
 <p>operations-page works!</p>
+<a class="skip-link" href="#flight-list">Skip to flight list</a>
+
+<div class="shell">
+  <app-app-header />
+
+  <div class="body">
+    <!-- LEFT: filters + flight list -->
+    <aside class="panel left" aria-label="Search and flights">
+      <section class="block">
+        <h2 class="block-title">Search &amp; filters</h2>
+        <div class="placeholder">Filters go here</div>
+      </section>
+      <section class="block grow" id="flight-list" tabindex="-1">
+        <h2 class="block-title">Flights</h2>
+        <div class="placeholder">Flight list goes here</div>
+      </section>
+    </aside>
+
+    <!-- CENTER: KPIs + map -->
+    <main class="center">
+      <div class="kpis">
+        <div class="placeholder">Total</div>
+        <div class="placeholder">Active</div>
+        <div class="placeholder">Delayed</div>
+        <div class="placeholder">Arrived</div>
+      </div>
+      <section class="map-area" aria-label="Flight map">
+        <div class="placeholder">Map goes here</div>
+      </section>
+    </main>
+
+    <!-- RIGHT: details + needs attention -->
+    <aside class="panel right" aria-label="Flight details">
+      <section class="block">
+        <div class="placeholder">Flight details go here</div>
+      </section>
+      <section class="block">
+        <h2 class="block-title">Needs attention</h2>
+        <div class="placeholder">Delayed flights go here</div>
+      </section>
+    </aside>
+  </div>
+</div>

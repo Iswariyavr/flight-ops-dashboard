@@ -1,0 +1,63 @@
+// Design tokens: every color, size and spacing value lives here.
+// Components use var(--name) and never hard-coded values.
+
+:root,
+[data-theme='dark'] {
+  --bg: #0b1118;
+  --surface: #111a24;
+  --surface-2: #172231;
+  --border: #223044;
+
+  --text: #e6edf5;
+  --text-muted: #8a9bb0;
+
+  --accent: #4da3ff;
+  --focus-ring: #7cc0ff;
+
+  --status-enroute: #4da3ff;
+  --status-delayed: #f5a524;
+  --status-arrived: #2ecc8f;
+  --status-boarding: #b38cff;
+  --status-scheduled: #8a9bb0;
+}
+
+[data-theme='light'] {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --surface-2: #eef2f7;
+  --border: #d8dfe8;
+  --text: #0f1b2a;
+  --text-muted: #5a6b80;
+  --accent: #1f6fd1;
+  --focus-ring: #1f6fd1;
+  --status-enroute: #1f6fd1;
+  --status-delayed: #b76e00;
+  --status-arrived: #16875c;
+  --status-boarding: #7a4fd6;
+  --status-scheduled: #5a6b80;
+}
+
+:root {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 20px;
+  --fs-2xl: 28px;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+
+  --radius: 8px;
+  --radius-pill: 999px;
+
+  --header-h: 56px;
+  --left-w: 300px;
+  --right-w: 320px;
+}

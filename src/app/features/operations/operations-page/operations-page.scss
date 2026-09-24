@@ -1,0 +1,86 @@
+.shell {
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: var(--header-h) 1fr;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: var(--left-w) 1fr var(--right-w);
+  min-height: 0; // lets the inner areas scroll instead of growing the page
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  min-height: 0;
+  overflow: auto;
+}
+
+.left {
+  border-right: 1px solid var(--border);
+}
+
+.right {
+  border-left: 1px solid var(--border);
+}
+
+.block {
+  padding: var(--sp-4);
+  border-bottom: 1px solid var(--border);
+
+  &.grow {
+    flex: 1;
+  }
+}
+
+.block-title {
+  margin: 0 0 var(--sp-3);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.center {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  min-height: 0;
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-3);
+}
+
+.map-area {
+  display: grid;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  min-height: 0;
+}
+
+// Temporary: dashed boxes showing where each piece will go
+.placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 64px;
+  height: 100%;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+// Small laptops / tablet landscape: slimmer side panels
+@media (max-width: 1279px) {
+  .body {
+    grid-template-columns: 260px 1fr 280px;
+  }
+}
