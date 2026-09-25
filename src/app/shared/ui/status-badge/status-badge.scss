@@ -1,0 +1,39 @@
+:host {
+  display: inline-flex;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  background: color-mix(in srgb, currentColor 14%, transparent);
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+}
+
+.is-enroute {
+  color: var(--status-enroute);
+}
+.is-delayed {
+  color: var(--status-delayed);
+}
+.is-arrived {
+  color: var(--status-arrived);
+}
+.is-boarding {
+  color: var(--status-boarding);
+}
+.is-scheduled {
+  color: var(--status-scheduled);
+}

@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { FlightStatus } from '../../../core/models/flight.model';
+import { STATUS_META } from '../../../core/models/flight-status';
 
 @Component({
   selector: 'app-status-badge',
-  imports: [],
   templateUrl: './status-badge.html',
   styleUrl: './status-badge.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StatusBadge {}
+export class StatusBadge {
+  readonly status = input.required<FlightStatus>();
+  protected readonly meta = computed(() => STATUS_META[this.status()]);
+}

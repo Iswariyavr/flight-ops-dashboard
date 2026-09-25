@@ -133,4 +133,58 @@
       color: var(--status-scheduled);
     }
   }
+  // ---- Selection states ----
+  .flight-icon.is-dimmed {
+    opacity: 0.35;
+  }
+
+  .flight-icon.is-selected {
+    svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    // Pulsing ring around the selected plane
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      animation: select-pulse 1.6s ease-out infinite;
+    }
+  }
+
+  @keyframes select-pulse {
+    from {
+      transform: scale(0.7);
+      opacity: 1;
+    }
+    to {
+      transform: scale(1.4);
+      opacity: 0;
+    }
+  }
+
+  // ---- Route ----
+  .route-line {
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-dasharray: 6 6;
+    fill: none;
+    opacity: 0.7;
+  }
+
+  .route-line--flown {
+    stroke-width: 3;
+    stroke-dasharray: none;
+    opacity: 1;
+  }
+
+  .route-endpoint {
+    stroke: var(--accent);
+    stroke-width: 2;
+    fill: var(--bg);
+    fill-opacity: 1;
+  }
 }

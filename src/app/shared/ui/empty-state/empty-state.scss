@@ -1,0 +1,25 @@
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-5) var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.icon {
+  font-size: var(--fs-xl);
+  color: var(--text-muted);
+}
+
+.heading {
+  margin: 0;
+  font-weight: 600;
+}
+
+.message {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}

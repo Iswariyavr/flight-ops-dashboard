@@ -1,1 +1,7 @@
-<p>empty-state works!</p>
+<div class="empty">
+  <div class="icon" aria-hidden="true">{{ icon() }}</div>
+  <p class="heading">{{ heading() }}</p>
+  @if (message()) {
+    <p class="message">{{ message() }}</p>
+  }
+</div>

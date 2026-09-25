@@ -7,16 +7,18 @@ const PLANE_PATH =
   'M12 2 L13.5 9 L21 13 L21 15 L13.5 12.5 L13 18 L15.5 20 L15.5 21.5 L12 20.5 ' +
   'L8.5 21.5 L8.5 20 L11 18 L10.5 12.5 L3 15 L3 13 L10.5 9 Z';
 
-export function planeIcon(flight: Flight): L.DivIcon {
+export type PlaneState = 'normal' | 'selected' | 'dimmed';
+
+export function planeIcon(flight: Flight, state: PlaneState = 'normal'): L.DivIcon {
   const meta = STATUS_META[flight.status];
   return L.divIcon({
-    className: `flight-icon is-${meta.cssClass}`,
+    className: `flight-icon is-${meta.cssClass} is-${state}`,
     html: `
       <div class="plane" style="transform: rotate(${flight.heading}deg)">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${PLANE_PATH}" /></svg>
       </div>`,
     iconSize: [28, 28],
-    iconAnchor: [14, 14], // center of the icon sits on the coordinate
+    iconAnchor: [14, 14],
   });
 }
 
