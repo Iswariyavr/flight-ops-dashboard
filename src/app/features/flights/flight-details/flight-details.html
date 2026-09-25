@@ -1,1 +1,74 @@
-<p>flight-details works!</p>
+<article class="details" aria-labelledby="details-title">
+  <header class="head">
+    <div class="title-group">
+      <h2 id="details-title" class="flight-no mono">{{ flight().flightNumber }}</h2>
+      <div class="sub mono">{{ flight().callsign }} · {{ flight().airline }}</div>
+    </div>
+    <app-status-badge [status]="flight().status" />
+    <button
+      type="button"
+      class="icon-btn"
+      aria-label="Close flight details"
+      (click)="closeDetails.emit()"
+    >
+      ✕
+    </button>
+  </header>
+
+  <div class="route">
+    <div class="ap">
+      <div class="code mono">{{ flight().origin }}</div>
+      <div class="city">{{ origin()?.city }}</div>
+    </div>
+    <div class="arrow" aria-hidden="true">✈</div>
+    <div class="ap end">
+      <div class="code mono">{{ flight().destination }}</div>
+      <div class="city">{{ destination()?.city }}</div>
+    </div>
+  </div>
+
+  <dl class="fields">
+    <div class="field">
+      <dt>Aircraft type</dt>
+      <dd class="mono">{{ flight().aircraftType }}</dd>
+    </div>
+    <div class="field">
+      <dt>Delay</dt>
+      <dd>
+        @if (flight().delayMinutes > 0) {
+          <span class="delay mono">+{{ flight().delayMinutes }} min</span>
+        } @else {
+          On time
+        }
+      </dd>
+    </div>
+    <div class="field">
+      <dt>Est. departure</dt>
+      <dd class="mono">{{ flight().estDeparture | date: 'HH:mm' : '+0530' }} IST</dd>
+    </div>
+    <div class="field">
+      <dt>Est. arrival</dt>
+      <dd class="mono">{{ flight().estArrival | date: 'HH:mm' : '+0530' }} IST</dd>
+    </div>
+    <div class="field">
+      <dt>Altitude</dt>
+      <dd class="mono">
+        @if (flight().airborne) {
+          {{ flight().altitudeFt | number }} ft
+        } @else {
+          On ground
+        }
+      </dd>
+    </div>
+    <div class="field">
+      <dt>Ground speed</dt>
+      <dd class="mono">
+        @if (flight().airborne) {
+          {{ flight().groundSpeedKt }} kt
+        } @else {
+          —
+        }
+      </dd>
+    </div>
+  </dl>
+</article>

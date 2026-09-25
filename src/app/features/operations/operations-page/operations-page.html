@@ -28,15 +28,36 @@
         <app-flight-map
           [flights]="flights()"
           [airports]="airports()"
+          [selectedId]="selectedId()"
           (flightSelect)="onFlightSelect($event)"
+          (selectionClear)="clearSelection()"
         />
       </section>
     </main>
 
     <!-- RIGHT: details + needs attention -->
     <aside class="panel right" aria-label="Flight details">
-      <section class="block">
-        <div class="placeholder">Selected: {{ selectedId() ?? 'none' }}</div>
+      <!-- RIGHT panel, first block -->
+      <section class="block" aria-live="polite">
+        @if (selectedFlight(); as flight) {
+          <app-flight-details
+            [flight]="flight"
+            [origin]="airportsByCode().get(flight.origin)"
+            [destination]="airportsByCode().get(flight.destination)"
+            (closeDetails)="clearSelection()"
+          />
+        } @else if (notFound()) {
+          <app-empty-state
+            icon="⚠"
+            heading="Flight not found"
+            message="This flight isn't in the current feed. The link may be out of date."
+          />
+        } @else {
+          <app-empty-state
+            heading="No flight selected"
+            message="Pick an aircraft on the map or a row in the flight list to see its route, schedule and aircraft details."
+          />
+        }
       </section>
       <section class="block">
         <h2 class="block-title">Needs attention</h2>

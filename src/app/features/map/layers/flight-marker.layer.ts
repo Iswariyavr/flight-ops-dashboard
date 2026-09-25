@@ -1,12 +1,7 @@
 import * as L from 'leaflet';
 import { Flight } from '../../../core/models/flight.model';
-import { flightTooltipHtml, planeIcon } from '../map-icons';
+import { PlaneState, flightTooltipHtml, planeIcon } from '../map-icons';
 
-/**
- * Draws one plane marker per flight.
- * update() DIFFS instead of redrawing: it adds new flights, moves existing
- * ones and removes flights that disappeared (e.g. filtered out).
- */
 export class FlightMarkerLayer {
   private readonly group = L.layerGroup();
   private readonly markers = new Map<string, L.Marker>();
@@ -18,10 +13,9 @@ export class FlightMarkerLayer {
     this.group.addTo(map);
   }
 
-  update(flights: Flight[]): void {
+  update(flights: Flight[], selectedId: string | null): void {
     const incomingIds = new Set(flights.map((f) => f.id));
 
-    // 1. Remove markers for flights that are no longer in the list
     for (const [id, marker] of this.markers) {
       if (!incomingIds.has(id)) {
         this.group.removeLayer(marker);
@@ -29,18 +23,23 @@ export class FlightMarkerLayer {
       }
     }
 
-    // 2. Update existing markers, create missing ones
     for (const flight of flights) {
+      const state: PlaneState =
+        selectedId === null ? 'normal' : flight.id === selectedId ? 'selected' : 'dimmed';
+      const icon = planeIcon(flight, state);
       const existing = this.markers.get(flight.id);
+
       if (existing) {
         existing.setLatLng(flight.position);
-        existing.setIcon(planeIcon(flight));
+        existing.setIcon(icon);
         existing.setTooltipContent(flightTooltipHtml(flight));
+        existing.setZIndexOffset(state === 'selected' ? 1000 : 0);
       } else {
         const marker = L.marker(flight.position, {
-          icon: planeIcon(flight),
+          icon,
           title: `${flight.flightNumber}, ${flight.origin} to ${flight.destination}`,
           riseOnHover: true,
+          zIndexOffset: state === 'selected' ? 1000 : 0,
         })
           .bindTooltip(flightTooltipHtml(flight), {
             direction: 'top',

@@ -7,6 +7,10 @@ export const routes: Routes = [
     title: 'Flightdeck · Live traffic',
     loadComponent: () =>
       import('./features/operations/operations-page/operations-page').then((m) => m.OperationsPage),
+    children: [
+      { path: '', children: [] }, // /ops               → nothing selected
+      { path: 'flight/:id', children: [] }, // /ops/flight/ai-889 → selected flight
+    ],
   },
   {
     path: '**',
