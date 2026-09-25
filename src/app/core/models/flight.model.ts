@@ -50,4 +50,5 @@ export interface FlightKpis {
   active: number;
   delayed: number;
   arrived: number;
+  avgDelayMinutes: number;
 }

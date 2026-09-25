@@ -2,15 +2,30 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs';
+import { FlightFilters } from '../../../core/models/flight.model';
+import { EMPTY_KPIS } from '../../../core/state/flight.selectors';
 import { FlightStore } from '../../../core/state/flight-store';
 import { AppHeader } from '../../../layout/app-header/app-header';
 import { EmptyState } from '../../../shared/ui/empty-state/empty-state';
+import { KpiCard } from '../../../shared/ui/kpi-card/kpi-card';
+import { AttentionList } from '../../flights/attention-list/attention-list';
 import { FlightDetails } from '../../flights/flight-details/flight-details';
+import { FlightFiltersPanel } from '../../flights/flight-filters/flight-filters';
+import { FlightList } from '../../flights/flight-list/flight-list';
 import { FlightMap } from '../../map/flight-map/flight-map';
 
 @Component({
   selector: 'app-operations-page',
-  imports: [AppHeader, FlightMap, FlightDetails, EmptyState],
+  imports: [
+    AppHeader,
+    FlightMap,
+    FlightDetails,
+    EmptyState,
+    FlightFiltersPanel,
+    FlightList,
+    KpiCard,
+    AttentionList,
+  ],
   templateUrl: './operations-page.html',
   styleUrl: './operations-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,8 +37,14 @@ export class OperationsPage {
   private readonly store = inject(FlightStore);
   private readonly router = inject(Router);
 
+  // Data
   protected readonly flights = toSignal(this.store.flights$, { initialValue: [] });
   protected readonly airports = toSignal(this.store.airports$, { initialValue: [] });
+  protected readonly filteredFlights = toSignal(this.store.filteredFlights$, { initialValue: [] });
+  protected readonly kpis = toSignal(this.store.kpis$, { initialValue: EMPTY_KPIS });
+  protected readonly attention = toSignal(this.store.attention$, { initialValue: [] });
+
+  // Selection
   protected readonly selectedId = toSignal(this.store.selectedId$, { initialValue: null });
   protected readonly selectedFlight = toSignal(this.store.selectedFlight$, { initialValue: null });
 
@@ -31,13 +52,18 @@ export class OperationsPage {
     () => new Map(this.airports().map((a) => [a.code, a])),
   );
 
-  /** A flight id is in the URL, data has loaded, but no such flight exists. */
+  /** Filtered flights, but the selected flight always stays on the map. */
+  protected readonly mapFlights = computed(() => {
+    const list = this.filteredFlights();
+    const selected = this.selectedFlight();
+    return selected && !list.some((f) => f.id === selected.id) ? [...list, selected] : list;
+  });
+
   protected readonly notFound = computed(
     () => !!this.selectedId() && this.flights().length > 0 && !this.selectedFlight(),
   );
 
   constructor() {
-    // URL → store: keep the selection in sync with /ops/flight/:id
     this.router.events
       .pipe(
         filter((e) => e instanceof NavigationEnd),
@@ -49,12 +75,22 @@ export class OperationsPage {
       .subscribe((id) => this.store.select(id));
   }
 
+  protected onFiltersChange(filters: FlightFilters): void {
+    this.store.setFilters(filters);
+  }
+
   protected onFlightSelect(id: string): void {
     this.router.navigate(['/ops/flight', id]);
   }
 
   protected clearSelection(): void {
     if (this.selectedId()) this.router.navigate(['/ops']);
+  }
+
+  /** Share of total, for the KPI progress bars. */
+  protected ratio(count: number): number {
+    const total = this.kpis().total;
+    return total ? count / total : 0;
   }
 
   private readFlightIdFromUrl(): string | null {

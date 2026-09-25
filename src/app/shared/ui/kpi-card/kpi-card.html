@@ -1,1 +1,10 @@
-<p>kpi-card works!</p>
+<article class="kpi" [class]="'tone-' + tone()">
+  <h3 class="label"><span class="dot" aria-hidden="true"></span>{{ label() }}</h3>
+  <p class="value-row">
+    <span class="value mono">{{ value() }}</span>
+    <span class="hint">{{ hint() }}</span>
+  </p>
+  <div class="bar" aria-hidden="true">
+    <span class="fill" [style.width.%]="percent()"></span>
+  </div>
+</article>

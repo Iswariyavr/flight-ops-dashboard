@@ -1,0 +1,74 @@
+:host {
+  display: block;
+}
+
+.kpi {
+  --tone: var(--text-muted);
+  display: grid;
+  gap: var(--sp-1);
+  height: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.tone-enroute {
+  --tone: var(--status-enroute);
+}
+.tone-delayed {
+  --tone: var(--status-delayed);
+}
+.tone-arrived {
+  --tone: var(--status-arrived);
+}
+
+.label {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--tone);
+}
+
+.value-row {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+
+.value {
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.hint {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.bar {
+  height: 3px;
+  margin-top: var(--sp-1);
+  border-radius: 2px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  background: var(--tone);
+  transition: width 0.3s ease;
+}

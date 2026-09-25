@@ -7,26 +7,53 @@
     <!-- LEFT: filters + flight list -->
     <aside class="panel left" aria-label="Search and flights">
       <section class="block">
-        <h2 class="block-title">Search &amp; filters</h2>
-        <div class="placeholder">Filters go here</div>
+        <app-flight-filters
+          [flights]="flights()"
+          [airports]="airports()"
+          (filtersChange)="onFiltersChange($event)"
+        />
       </section>
+
       <section class="block grow" id="flight-list" tabindex="-1">
-        <h2 class="block-title">Flights</h2>
-        <div class="placeholder">Flight list goes here</div>
+        <app-flight-list
+          [flights]="filteredFlights()"
+          [total]="flights().length"
+          [selectedId]="selectedId()"
+          (flightSelect)="onFlightSelect($event)"
+        />
       </section>
     </aside>
 
     <!-- CENTER: KPIs + map -->
     <main class="center">
-      <div class="kpis">
-        <div class="placeholder">Total</div>
-        <div class="placeholder">Active</div>
-        <div class="placeholder">Delayed</div>
-        <div class="placeholder">Arrived</div>
-      </div>
+      <section class="kpis" aria-label="Key metrics">
+        <app-kpi-card label="Total flights" [value]="kpis().total" hint="Tracked today" />
+        <app-kpi-card
+          label="Active flights"
+          tone="enroute"
+          [value]="kpis().active"
+          hint="Airborne now"
+          [ratio]="ratio(kpis().active)"
+        />
+        <app-kpi-card
+          label="Delayed flights"
+          tone="delayed"
+          [value]="kpis().delayed"
+          [hint]="kpis().delayed ? 'Avg +' + kpis().avgDelayMinutes + ' min' : 'None'"
+          [ratio]="ratio(kpis().delayed)"
+        />
+        <app-kpi-card
+          label="Arrived flights"
+          tone="arrived"
+          [value]="kpis().arrived"
+          hint="At gate"
+          [ratio]="ratio(kpis().arrived)"
+        />
+      </section>
+
       <section class="map-area" aria-label="Flight map">
         <app-flight-map
-          [flights]="flights()"
+          [flights]="mapFlights()"
           [airports]="airports()"
           [selectedId]="selectedId()"
           (flightSelect)="onFlightSelect($event)"
@@ -37,7 +64,6 @@
 
     <!-- RIGHT: details + needs attention -->
     <aside class="panel right" aria-label="Flight details">
-      <!-- RIGHT panel, first block -->
       <section class="block" aria-live="polite">
         @if (selectedFlight(); as flight) {
           <app-flight-details
@@ -59,9 +85,9 @@
           />
         }
       </section>
+
       <section class="block">
-        <h2 class="block-title">Needs attention</h2>
-        <div class="placeholder">Delayed flights go here</div>
+        <app-attention-list [flights]="attention()" (flightSelect)="onFlightSelect($event)" />
       </section>
     </aside>
   </div>
