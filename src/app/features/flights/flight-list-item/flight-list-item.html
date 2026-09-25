@@ -1,1 +1,10 @@
-<p>flight-list-item works!</p>
+<span class="line1">
+  <span class="dot" [class]="'is-' + meta().cssClass" aria-hidden="true"></span>
+  <span class="flight-no mono">{{ flight().flightNumber }}</span>
+  <span class="callsign mono">{{ flight().callsign }}</span>
+  <app-status-badge class="badge" [status]="flight().status" />
+</span>
+<span class="line2 mono">
+  <span>{{ flight().origin }} → {{ flight().destination }}</span>
+  <span>ETA {{ flight().estArrival | date: 'HH:mm' : '+0530' }}</span>
+</span>

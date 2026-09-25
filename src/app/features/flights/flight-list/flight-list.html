@@ -1,1 +1,29 @@
-<p>flight-list works!</p>
+<div class="head">
+  <h2 class="block-title" id="flights-heading">Flights</h2>
+  <span class="count mono" aria-live="polite">{{ flights().length }} of {{ total() }}</span>
+</div>
+
+@if (flights().length) {
+  <ul class="list" aria-labelledby="flights-heading">
+    @for (flight of flights(); track flight.id) {
+      <li>
+        <button
+          type="button"
+          class="row"
+          [class.is-selected]="flight.id === selectedId()"
+          [attr.aria-current]="flight.id === selectedId() ? 'true' : null"
+          [attr.data-flight-id]="flight.id"
+          (click)="flightSelect.emit(flight.id)"
+        >
+          <app-flight-list-item [flight]="flight" />
+        </button>
+      </li>
+    }
+  </ul>
+} @else {
+  <app-empty-state
+    icon="⌕"
+    heading="No flights match your filters"
+    message="Try a different callsign or reset the filters."
+  />
+}

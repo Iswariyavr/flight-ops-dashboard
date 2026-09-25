@@ -1,1 +1,19 @@
-<p>attention-list works!</p>
+<h2 class="block-title">Needs attention</h2>
+
+@if (flights().length) {
+  <ul class="list">
+    @for (flight of flights(); track flight.id) {
+      <li>
+        <button type="button" class="row" (click)="flightSelect.emit(flight.id)">
+          <span class="left">
+            <span class="flight-no mono">{{ flight.flightNumber }}</span>
+            <span class="route mono">{{ flight.origin }} → {{ flight.destination }}</span>
+          </span>
+          <span class="delay mono">+{{ flight.delayMinutes }} min</span>
+        </button>
+      </li>
+    }
+  </ul>
+} @else {
+  <p class="none">All flights are on schedule.</p>
+}

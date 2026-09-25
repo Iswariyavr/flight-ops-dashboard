@@ -1,1 +1,54 @@
-<p>flight-filters works!</p>
+<form class="filters" [formGroup]="form" role="search" aria-label="Filter flights">
+  <div class="head">
+    <h2 class="block-title">Search &amp; filters</h2>
+    <button type="button" class="link-btn" (click)="reset()">Reset</button>
+  </div>
+
+  <label class="field">
+    <span class="label">Callsign</span>
+    <span class="search">
+      <span class="search-icon" aria-hidden="true">⌕</span>
+      <input
+        type="search"
+        formControlName="callsign"
+        placeholder="e.g. IGO2143"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </span>
+  </label>
+
+  <label class="field">
+    <span class="label">Status</span>
+    <select formControlName="status">
+      <option [ngValue]="null">All statuses ({{ flights().length }})</option>
+      @for (status of statusOptions; track status) {
+        <option [ngValue]="status">
+          {{ statusMeta[status].label }} ({{ statusCounts()[status] }})
+        </option>
+      }
+    </select>
+  </label>
+
+  <div class="row">
+    <label class="field">
+      <span class="label">Origin</span>
+      <select formControlName="origin">
+        <option [ngValue]="null">Any</option>
+        @for (airport of originOptions(); track airport.code) {
+          <option [ngValue]="airport.code">{{ airport.code }} · {{ airport.city }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="label">Destination</span>
+      <select formControlName="destination">
+        <option [ngValue]="null">Any</option>
+        @for (airport of destinationOptions(); track airport.code) {
+          <option [ngValue]="airport.code">{{ airport.code }} · {{ airport.city }}</option>
+        }
+      </select>
+    </label>
+  </div>
+</form>
