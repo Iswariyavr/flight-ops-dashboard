@@ -1,4 +1,3 @@
-import { greatCirclePoints } from './geo';
 import { bearing, greatCirclePoints, interpolateGreatCircle } from './geo';
 
 const DEL = { lat: 28.5562, lng: 77.1 };
