@@ -3,8 +3,9 @@
 A responsive operations console for monitoring domestic flights over India, built with **Angular 21** and **Leaflet**.
 Operators can track 18 live (mock) flights on a map, inspect any flight's route and schedule, filter the traffic, watch key metrics, and replay traffic forward in time.
 
-**Live demo:** https://iswariyav.github.io/flight-ops-dashboard/
-**Demo video:** _add your Loom / YouTube link here_
+**live demo** https://iswariyavr.github.io/flight-ops-dashboard/
+**clone URL:** https://github.com/Iswariyavr/flight-ops-dashboard.git
+**Demo video:** https://www.loom.com/share/e735581cbb474d819b93f28e9a325def
 **Design explanation:** [docs/DESIGN.md](docs/DESIGN.md)
 
 ![Desktop view with a selected flight](docs/screenshots/desktop-selected.png)
