@@ -1,0 +1,35 @@
+.not-found {
+  min-height: 100dvh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  text-align: center;
+}
+
+.icon {
+  font-size: 40px;
+  color: var(--accent);
+  transform: rotate(45deg);
+}
+
+h1 {
+  margin: 0;
+  font-size: var(--fs-2xl);
+}
+
+p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.home-link {
+  margin-top: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
