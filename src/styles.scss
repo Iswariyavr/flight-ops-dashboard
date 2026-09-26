@@ -23,6 +23,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.block-title {
+  margin: 0 0 var(--sp-3);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
 .mono {
   font-family: var(--font-mono);
 }
@@ -54,14 +63,5 @@ body {
   * {
     animation: none !important;
     transition: none !important;
-  }
-
-  .block-title {
-    margin: 0 0 var(--sp-3);
-    font-size: var(--fs-xs);
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
   }
 }

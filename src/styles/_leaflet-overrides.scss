@@ -4,6 +4,11 @@
   font-family: var(--font-sans);
 }
 
+// Dark basemap: turns the light OpenStreetMap tiles dark
+.leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9) saturate(0.4);
+}
+
 // Zoom buttons + attribution to match the dark theme
 .leaflet-bar a {
   background: var(--surface);

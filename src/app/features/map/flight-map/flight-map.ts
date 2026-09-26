@@ -20,7 +20,8 @@ import { FlightMarkerLayer } from '../layers/flight-marker.layer';
 import { RouteLayer } from '../layers/route.layer';
 
 const INDIA_CENTER: L.LatLngExpression = [22.5, 80];
-const DARK_TILES = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+// const DARK_TILES = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+const TILES = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
 @Component({
   selector: 'app-flight-map',
@@ -112,11 +113,16 @@ export class FlightMap {
     const el = this.mapEl().nativeElement;
 
     this.map = L.map(el, { center: INDIA_CENTER, zoom: 5, minZoom: 4, maxZoom: 10 });
-
-    L.tileLayer(DARK_TILES, {
-      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-      subdomains: 'abcd',
+    L.tileLayer(TILES, {
+      attribution: '&copy; OpenStreetMap contributors',
+      subdomains: 'abc',
+      maxZoom: 19,
     }).addTo(this.map);
+
+    // L.tileLayer(DARK_TILES, {
+    //   attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+    //   subdomains: 'abcd',
+    // }).addTo(this.map);
 
     // Layer order = drawing order: airports, then route, then planes on top
     this.airportLayer = new AirportLayer(this.map);
