@@ -1,0 +1,57 @@
+:host {
+  position: absolute;
+  top: var(--sp-3);
+  left: var(--sp-3);
+  right: var(--sp-3);
+  z-index: 1000; // above Leaflet panes
+  pointer-events: none; // never blocks dragging the map
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(4px);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.count {
+  color: var(--text-muted);
+}
+
+.is-enroute {
+  --c: var(--status-enroute);
+}
+.is-delayed {
+  --c: var(--status-delayed);
+}
+.is-arrived {
+  --c: var(--status-arrived);
+}
+.is-boarding {
+  --c: var(--status-boarding);
+}
+.is-scheduled {
+  --c: var(--status-scheduled);
+}

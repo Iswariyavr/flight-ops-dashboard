@@ -6,12 +6,14 @@
   padding: 0 var(--sp-4);
   background: var(--surface);
   border-bottom: 1px solid var(--border);
+  overflow: hidden;
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
+  flex: none;
 }
 
 .logo {
@@ -27,12 +29,14 @@
 .brand-name,
 .context-title {
   font-weight: 600;
+  line-height: 1.2;
 }
 
 .brand-sub,
 .context-sub {
   font-size: var(--fs-xs);
   color: var(--text-muted);
+  line-height: 1.2;
 }
 
 .divider {
@@ -54,21 +58,39 @@
   border-radius: var(--radius-pill);
   font-size: var(--fs-xs);
   color: var(--text-muted);
-}
+  white-space: nowrap;
 
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--status-arrived);
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  &.is-ready .dot {
+    background: var(--status-arrived);
+  }
+  &.is-loading .dot {
+    background: var(--status-delayed);
+  }
+
+  &.is-error {
+    color: var(--status-delayed);
+    border-color: var(--status-delayed);
+
+    .dot {
+      background: var(--status-delayed);
+    }
+  }
 }
 
 .clock {
   text-align: right;
   line-height: 1.2;
+  white-space: nowrap;
 }
 
 .clock-main {
+  display: block;
   font-weight: 600;
 }
 
@@ -78,11 +100,30 @@
 }
 
 .icon-btn {
+  flex: none;
   width: 36px;
   height: 36px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--surface-2);
   color: var(--text);
+  font: inherit;
   cursor: pointer;
+}
+
+.menu-btn {
+  width: auto;
+  padding: 0 var(--sp-3);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+// Tablet: keep only what matters
+@media (max-width: 1023.98px) {
+  .divider,
+  .context,
+  .brand-sub {
+    display: none;
+  }
 }
