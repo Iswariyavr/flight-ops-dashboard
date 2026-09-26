@@ -15,7 +15,8 @@
   flex-direction: column;
   background: var(--surface);
   min-height: 0;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .left {
