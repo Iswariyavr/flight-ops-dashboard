@@ -1,1 +1,36 @@
-<p>map-toolbar works!</p>
+<div class="toolbar" role="group" aria-label="Flight playback">
+  <button type="button" class="btn primary" (click)="playToggle.emit()">
+    @if (playing()) {
+      <span aria-hidden="true">❚❚</span> Pause
+    } @else {
+      <span aria-hidden="true">▶</span> Play
+    }
+  </button>
+
+  <button
+    type="button"
+    class="btn"
+    [disabled]="elapsedMinutes() === 0 && !playing()"
+    (click)="resetPlayback.emit()"
+  >
+    Reset
+  </button>
+
+  <span class="divider" aria-hidden="true"></span>
+
+  <div class="speeds" role="group" aria-label="Playback speed">
+    @for (s of speeds; track s) {
+      <button
+        type="button"
+        class="btn speed"
+        [class.is-active]="s === speed()"
+        [attr.aria-pressed]="s === speed()"
+        (click)="speedChange.emit(s)"
+      >
+        {{ s }}×
+      </button>
+    }
+  </div>
+
+  <span class="elapsed mono">+{{ elapsedMinutes() | number: '1.0-0' }} min</span>
+</div>

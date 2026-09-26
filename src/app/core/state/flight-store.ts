@@ -13,6 +13,8 @@ import {
 import { FlightApi } from '../data/flight-api'; // ← your real class name + path
 import { Airport, Flight, FlightFilters } from '../models/flight.model';
 import { EMPTY_FILTERS, computeKpis, filterFlights, needsAttention } from './flight.selectors';
+import { PlaybackService } from '../services/playback';
+import { advanceFlights } from './flight-simulation';
 
 export type LoadStatus = 'loading' | 'ready' | 'error';
 
@@ -29,6 +31,7 @@ export class FlightStore {
   private readonly reload$ = new BehaviorSubject<void>(undefined);
   private readonly selectedIdSubject = new BehaviorSubject<string | null>(null);
   private readonly filtersSubject = new BehaviorSubject<FlightFilters>(EMPTY_FILTERS);
+  private readonly playback = inject(PlaybackService);
 
   /** Loads both files; every reload$ emission (Retry) starts a fresh request. */
   private readonly state$ = this.reload$.pipe(
@@ -47,7 +50,11 @@ export class FlightStore {
     map((s) => s.status),
     distinctUntilChanged(),
   );
-  readonly flights$ = this.state$.pipe(map((s) => s.flights));
+  /** Loaded flights, moved forward by the playback clock. */
+  readonly flights$ = combineLatest([this.state$, this.playback.elapsedMinutes$]).pipe(
+    map(([state, minutes]) => advanceFlights(state.flights, state.airports, minutes)),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
   readonly airports$ = this.state$.pipe(map((s) => s.airports));
 
   // Filters

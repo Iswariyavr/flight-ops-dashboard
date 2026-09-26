@@ -1,0 +1,82 @@
+:host {
+  position: absolute;
+  left: var(--sp-3);
+  bottom: var(--sp-3);
+  z-index: 1000; // above Leaflet panes
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 30%);
+}
+
+.btn {
+  height: 32px;
+  padding: 0 var(--sp-3);
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--surface-2);
+  }
+
+  &:disabled {
+    color: var(--text-muted);
+    cursor: default;
+  }
+}
+
+.primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 84px;
+  background: var(--accent);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--accent) 85%, #000);
+  }
+}
+
+.speeds {
+  display: flex;
+  gap: 2px;
+}
+
+.speed {
+  padding: 0 var(--sp-2);
+  font-family: var(--font-mono);
+
+  &.is-active {
+    background: var(--surface-2);
+    color: var(--accent);
+  }
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  margin: 0 var(--sp-1);
+  background: var(--border);
+}
+
+.elapsed {
+  padding: 0 var(--sp-2);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+}

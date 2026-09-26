@@ -15,6 +15,8 @@ import { FlightFiltersPanel } from '../../flights/flight-filters/flight-filters'
 import { FlightList } from '../../flights/flight-list/flight-list';
 import { FlightMap } from '../../map/flight-map/flight-map';
 import { MapLegend } from '../../map/map-legend/map-legend';
+import { PlaybackService, PlaybackSpeed } from '../../../core/services/playback';
+import { MapToolbar } from '../../map/map-toolbar/map-toolbar';
 
 @Component({
   selector: 'app-operations-page',
@@ -28,6 +30,7 @@ import { MapLegend } from '../../map/map-legend/map-legend';
     FlightList,
     KpiCard,
     AttentionList,
+    MapToolbar,
   ],
   templateUrl: './operations-page.html',
   styleUrl: './operations-page.scss',
@@ -60,6 +63,25 @@ export class OperationsPage {
     { initialValue: false },
   );
   protected readonly listOpen = signal(false);
+  private readonly playback = inject(PlaybackService);
+
+  protected readonly playing = toSignal(this.playback.playing$, { requireSync: true });
+  protected readonly speed = toSignal(this.playback.speed$, { requireSync: true });
+  protected readonly elapsedMinutes = toSignal(this.playback.elapsedMinutes$, {
+    requireSync: true,
+  });
+
+  protected togglePlayback(): void {
+    this.playback.toggle();
+  }
+
+  protected resetPlayback(): void {
+    this.playback.reset();
+  }
+
+  protected setSpeed(speed: PlaybackSpeed): void {
+    this.playback.setSpeed(speed);
+  }
 
   // Derived
   protected readonly airportsByCode = computed(

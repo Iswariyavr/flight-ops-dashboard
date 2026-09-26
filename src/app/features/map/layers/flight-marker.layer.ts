@@ -5,6 +5,8 @@ import { PlaneState, flightTooltipHtml, planeIcon } from '../map-icons';
 export class FlightMarkerLayer {
   private readonly group = L.layerGroup();
   private readonly markers = new Map<string, L.Marker>();
+  /** Remembers what each icon currently shows, to skip needless redraws. */
+  private readonly iconKeys = new Map<string, string>();
 
   constructor(
     map: L.Map,
@@ -20,26 +22,32 @@ export class FlightMarkerLayer {
       if (!incomingIds.has(id)) {
         this.group.removeLayer(marker);
         this.markers.delete(id);
+        this.iconKeys.delete(id);
       }
     }
 
     for (const flight of flights) {
       const state: PlaneState =
         selectedId === null ? 'normal' : flight.id === selectedId ? 'selected' : 'dimmed';
-      const icon = planeIcon(flight, state);
+      const iconKey = `${flight.status}|${state}|${Math.round(flight.heading)}`;
+      const zIndex = state === 'selected' ? 1000 : 0;
       const existing = this.markers.get(flight.id);
 
       if (existing) {
-        existing.setLatLng(flight.position);
-        existing.setIcon(icon);
-        existing.setTooltipContent(flightTooltipHtml(flight));
-        existing.setZIndexOffset(state === 'selected' ? 1000 : 0);
+        existing.setLatLng(flight.position); // cheap: just moves it
+
+        if (this.iconKeys.get(flight.id) !== iconKey) {
+          existing.setIcon(planeIcon(flight, state));
+          existing.setTooltipContent(flightTooltipHtml(flight));
+          existing.setZIndexOffset(zIndex);
+          this.iconKeys.set(flight.id, iconKey);
+        }
       } else {
         const marker = L.marker(flight.position, {
-          icon,
+          icon: planeIcon(flight, state),
           title: `${flight.flightNumber}, ${flight.origin} to ${flight.destination}`,
           riseOnHover: true,
-          zIndexOffset: state === 'selected' ? 1000 : 0,
+          zIndexOffset: zIndex,
         })
           .bindTooltip(flightTooltipHtml(flight), {
             direction: 'top',
@@ -50,6 +58,7 @@ export class FlightMarkerLayer {
 
         marker.addTo(this.group);
         this.markers.set(flight.id, marker);
+        this.iconKeys.set(flight.id, iconKey);
       }
     }
   }
@@ -58,5 +67,6 @@ export class FlightMarkerLayer {
     this.group.clearLayers();
     this.group.remove();
     this.markers.clear();
+    this.iconKeys.clear();
   }
 }
