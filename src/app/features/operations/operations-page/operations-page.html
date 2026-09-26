@@ -1,11 +1,26 @@
 <a class="skip-link" href="#flight-list">Skip to flight list</a>
 
 <div class="shell">
-  <app-app-header />
+  <app-app-header
+    [feedStatus]="loadStatus()"
+    [showMenuButton]="isNarrow()"
+    [menuOpen]="listOpen()"
+    (menuToggle)="toggleList()"
+  />
 
-  <div class="body">
-    <!-- LEFT: filters + flight list -->
-    <aside class="panel left" aria-label="Search and flights">
+  <div
+    class="body"
+    [class.left-open]="listOpen()"
+    [class.right-open]="!!selectedFlight() || notFound()"
+  >
+    <!-- LEFT: filters + flight list (drawer on tablet portrait) -->
+    <aside id="flight-panel" class="panel left" aria-label="Search and flights">
+      @if (isNarrow()) {
+        <div class="drawer-bar">
+          <button type="button" class="drawer-close" (click)="listOpen.set(false)">✕ Close</button>
+        </div>
+      }
+
       <section class="block">
         <app-flight-filters
           [flights]="flights()"
@@ -59,10 +74,29 @@
           (flightSelect)="onFlightSelect($event)"
           (selectionClear)="clearSelection()"
         />
+
+        <app-map-legend [counts]="statusCounts()" />
+
+        @if (loadStatus() === 'loading') {
+          <div class="map-overlay" role="status">
+            <div class="overlay-card">
+              <span class="spinner" aria-hidden="true"></span>
+              Loading flights…
+            </div>
+          </div>
+        } @else if (loadStatus() === 'error') {
+          <div class="map-overlay" role="alert">
+            <div class="overlay-card">
+              <strong>Couldn't load flight data</strong>
+              <span class="muted">Check your connection and try again.</span>
+              <button type="button" class="retry-btn" (click)="retry()">Retry</button>
+            </div>
+          </div>
+        }
       </section>
     </main>
 
-    <!-- RIGHT: details + needs attention -->
+    <!-- RIGHT: details + needs attention (drawer below 1280px) -->
     <aside class="panel right" aria-label="Flight details">
       <section class="block" aria-live="polite">
         @if (selectedFlight(); as flight) {
@@ -90,5 +124,8 @@
         <app-attention-list [flights]="attention()" (flightSelect)="onFlightSelect($event)" />
       </section>
     </aside>
+
+    <!-- Dark backdrop behind open drawers (tablet only) -->
+    <div class="scrim" aria-hidden="true" (click)="closeDrawers()"></div>
   </div>
 </div>

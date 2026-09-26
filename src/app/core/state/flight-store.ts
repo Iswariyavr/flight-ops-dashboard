@@ -1,19 +1,54 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, shareReplay } from 'rxjs';
-import { FlightApiService } from '../data/flight-api'; // ← your real class name + path
-import { FlightFilters } from '../models/flight.model';
+import {
+  BehaviorSubject,
+  catchError,
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  of,
+  shareReplay,
+  startWith,
+  switchMap,
+} from 'rxjs';
+import { FlightApi } from '../data/flight-api'; // ← your real class name + path
+import { Airport, Flight, FlightFilters } from '../models/flight.model';
 import { EMPTY_FILTERS, computeKpis, filterFlights, needsAttention } from './flight.selectors';
+
+export type LoadStatus = 'loading' | 'ready' | 'error';
+
+interface LoadState {
+  status: LoadStatus;
+  flights: Flight[];
+  airports: Airport[];
+}
 
 @Injectable({ providedIn: 'root' })
 export class FlightStore {
-  private readonly api = inject(FlightApiService);
+  private readonly api = inject(FlightApi);
 
+  private readonly reload$ = new BehaviorSubject<void>(undefined);
   private readonly selectedIdSubject = new BehaviorSubject<string | null>(null);
   private readonly filtersSubject = new BehaviorSubject<FlightFilters>(EMPTY_FILTERS);
 
+  /** Loads both files; every reload$ emission (Retry) starts a fresh request. */
+  private readonly state$ = this.reload$.pipe(
+    switchMap(() =>
+      combineLatest([this.api.getFlights(), this.api.getAirports()]).pipe(
+        map(([flights, airports]): LoadState => ({ status: 'ready', flights, airports })),
+        startWith<LoadState>({ status: 'loading', flights: [], airports: [] }),
+        catchError(() => of<LoadState>({ status: 'error', flights: [], airports: [] })),
+      ),
+    ),
+    shareReplay(1),
+  );
+
   // Raw data
-  readonly flights$ = this.api.flights$;
-  readonly airports$ = this.api.airports$;
+  readonly loadStatus$ = this.state$.pipe(
+    map((s) => s.status),
+    distinctUntilChanged(),
+  );
+  readonly flights$ = this.state$.pipe(map((s) => s.flights));
+  readonly airports$ = this.state$.pipe(map((s) => s.airports));
 
   // Filters
   readonly filters$ = this.filtersSubject.asObservable();
@@ -24,8 +59,6 @@ export class FlightStore {
   );
 
   readonly kpis$ = this.filteredFlights$.pipe(map(computeKpis));
-
-  /** Uses ALL flights: delays stay visible even when filters hide them. */
   readonly attention$ = this.flights$.pipe(map(needsAttention));
 
   // Selection
@@ -41,5 +74,9 @@ export class FlightStore {
 
   select(id: string | null): void {
     this.selectedIdSubject.next(id);
+  }
+
+  retry(): void {
+    this.reload$.next();
   }
 }

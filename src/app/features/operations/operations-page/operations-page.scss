@@ -5,18 +5,20 @@
 }
 
 .body {
+  position: relative;
   display: grid;
   grid-template-columns: var(--left-w) 1fr var(--right-w);
-  min-height: 0; // lets the inner areas scroll instead of growing the page
+  min-height: 0;
+  overflow: hidden;
 }
 
 .panel {
   display: flex;
   flex-direction: column;
-  background: var(--surface);
   min-height: 0;
-  overflow-y: auto;
   overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--surface);
 }
 
 .left {
@@ -25,15 +27,6 @@
 
 .right {
   border-left: 1px solid var(--border);
-}
-
-.block {
-  padding: var(--sp-4);
-  border-bottom: 1px solid var(--border);
-
-  &.grow {
-    flex: 1;
-  }
 }
 
 .block {
@@ -51,39 +44,166 @@
   display: grid;
   grid-template-rows: auto 1fr;
   gap: var(--sp-4);
-  padding: var(--sp-4);
+  min-width: 0;
   min-height: 0;
+  padding: var(--sp-4);
+  container-type: inline-size; // lets children react to THIS column's width
 }
 
+// Always 4 across; 2×2 only when the center column itself gets narrow
 .kpis {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--sp-3);
 }
 
+@container (max-width: 560px) {
+  .kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .map-area {
+  position: relative;
   display: grid;
+  min-height: 0;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  min-height: 0;
 }
 
-// Temporary: dashed boxes showing where each piece will go
-.placeholder {
+// ---- Loading / error overlay ----
+.map-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1001;
   display: grid;
   place-items: center;
-  min-height: 64px;
-  height: 100%;
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
 }
 
-// Small laptops / tablet landscape: slimmer side panels
-@media (max-width: 1279px) {
+.overlay-card {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-align: center;
+}
+
+.muted {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.retry-btn,
+.drawer-close {
+  min-height: 36px;
+  padding: 0 var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.drawer-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--sp-3) var(--sp-4) 0;
+}
+
+.scrim {
+  display: none;
+}
+
+// =============================================================
+// Small laptop / tablet landscape: details become a right drawer
+// =============================================================
+@media (max-width: 1279.98px) {
   .body {
-    grid-template-columns: 260px 1fr 280px;
+    grid-template-columns: 280px 1fr;
+  }
+
+  .right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1100;
+    width: min(360px, 90vw);
+    box-shadow: -8px 0 24px rgb(0 0 0 / 35%);
+    transform: translateX(100%);
+    visibility: hidden; // hidden drawers can't be tabbed into
+    transition:
+      transform 0.25s ease,
+      visibility 0.25s;
+  }
+
+  .body.right-open .right {
+    transform: none;
+    visibility: visible;
+  }
+}
+
+// =============================================================
+// Tablet portrait: map full width, flight panel becomes a left drawer
+// =============================================================
+@media (max-width: 1023.98px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+
+  .center {
+    padding: var(--sp-3);
+    gap: var(--sp-3);
+  }
+
+  .left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1100;
+    width: min(340px, 90vw);
+    box-shadow: 8px 0 24px rgb(0 0 0 / 35%);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition:
+      transform 0.25s ease,
+      visibility 0.25s;
+  }
+
+  .body.left-open .left {
+    transform: none;
+    visibility: visible;
+  }
+
+  // Tap outside an open drawer to close it
+  .body.left-open .scrim,
+  .body.right-open .scrim {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 1050;
+    background: rgb(0 0 0 / 45%);
   }
 }

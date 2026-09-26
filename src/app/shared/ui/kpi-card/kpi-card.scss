@@ -72,3 +72,11 @@
   background: var(--tone);
   transition: width 0.3s ease;
 }
+
+.value-row {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--sp-2);
+}

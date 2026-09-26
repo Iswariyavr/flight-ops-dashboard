@@ -1,4 +1,16 @@
 <header class="header">
+  @if (showMenuButton()) {
+    <button
+      type="button"
+      class="icon-btn menu-btn"
+      aria-controls="flight-panel"
+      [attr.aria-expanded]="menuOpen()"
+      (click)="menuToggle.emit()"
+    >
+      ☰ <span class="menu-label">Flights</span>
+    </button>
+  }
+
   <div class="brand">
     <span class="logo" aria-hidden="true">✈</span>
     <div>
@@ -16,12 +28,23 @@
 
   <div class="spacer"></div>
 
-  <span class="feed-pill"><span class="dot" aria-hidden="true"></span>Mock feed · connected</span>
+  <span class="feed-pill" [class]="'is-' + feedStatus()" role="status">
+    <span class="dot" aria-hidden="true"></span>{{ feedLabel() }}
+  </span>
 
-  <div class="clock mono" aria-label="Current time">
-    <div class="clock-main">--:-- IST</div>
-    <div class="clock-sub">--:--Z</div>
+  <div class="clock mono">
+    <time class="clock-main" [attr.datetime]="now().toISOString()">
+      {{ now() | date: 'HH:mm' : '+0530' }} IST
+    </time>
+    <div class="clock-sub">{{ now() | date: 'HH:mm' : 'UTC' }}Z</div>
   </div>
 
-  <button class="icon-btn" type="button" aria-label="Toggle color theme">☀</button>
+  <button
+    type="button"
+    class="icon-btn"
+    [attr.aria-label]="theme.theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+    (click)="theme.toggle()"
+  >
+    {{ theme.theme() === 'dark' ? '☀' : '☾' }}
+  </button>
 </header>

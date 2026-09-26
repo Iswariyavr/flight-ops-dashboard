@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs';
 import { FlightFilters } from '../../../core/models/flight.model';
-import { EMPTY_KPIS } from '../../../core/state/flight.selectors';
+import { EMPTY_KPIS, countByStatus } from '../../../core/state/flight.selectors';
 import { FlightStore } from '../../../core/state/flight-store';
 import { AppHeader } from '../../../layout/app-header/app-header';
 import { EmptyState } from '../../../shared/ui/empty-state/empty-state';
@@ -13,12 +14,14 @@ import { FlightDetails } from '../../flights/flight-details/flight-details';
 import { FlightFiltersPanel } from '../../flights/flight-filters/flight-filters';
 import { FlightList } from '../../flights/flight-list/flight-list';
 import { FlightMap } from '../../map/flight-map/flight-map';
+import { MapLegend } from '../../map/map-legend/map-legend';
 
 @Component({
   selector: 'app-operations-page',
   imports: [
     AppHeader,
     FlightMap,
+    MapLegend,
     FlightDetails,
     EmptyState,
     FlightFiltersPanel,
@@ -30,7 +33,7 @@ import { FlightMap } from '../../map/flight-map/flight-map';
   styleUrl: './operations-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '(document:keydown.escape)': 'clearSelection()',
+    '(document:keydown.escape)': 'onEscape()',
   },
 })
 export class OperationsPage {
@@ -38,6 +41,7 @@ export class OperationsPage {
   private readonly router = inject(Router);
 
   // Data
+  protected readonly loadStatus = toSignal(this.store.loadStatus$, { initialValue: 'loading' });
   protected readonly flights = toSignal(this.store.flights$, { initialValue: [] });
   protected readonly airports = toSignal(this.store.airports$, { initialValue: [] });
   protected readonly filteredFlights = toSignal(this.store.filteredFlights$, { initialValue: [] });
@@ -48,11 +52,21 @@ export class OperationsPage {
   protected readonly selectedId = toSignal(this.store.selectedId$, { initialValue: null });
   protected readonly selectedFlight = toSignal(this.store.selectedFlight$, { initialValue: null });
 
+  // Layout: tablet portrait and below gets a slide-in flight panel
+  protected readonly isNarrow = toSignal(
+    inject(BreakpointObserver)
+      .observe('(max-width: 1023.98px)')
+      .pipe(map((result) => result.matches)),
+    { initialValue: false },
+  );
+  protected readonly listOpen = signal(false);
+
+  // Derived
   protected readonly airportsByCode = computed(
     () => new Map(this.airports().map((a) => [a.code, a])),
   );
+  protected readonly statusCounts = computed(() => countByStatus(this.filteredFlights()));
 
-  /** Filtered flights, but the selected flight always stays on the map. */
   protected readonly mapFlights = computed(() => {
     const list = this.filteredFlights();
     const selected = this.selectedFlight();
@@ -81,13 +95,34 @@ export class OperationsPage {
 
   protected onFlightSelect(id: string): void {
     this.router.navigate(['/ops/flight', id]);
+    if (this.isNarrow()) this.listOpen.set(false); // reveal the map after picking
   }
 
   protected clearSelection(): void {
     if (this.selectedId()) this.router.navigate(['/ops']);
   }
 
-  /** Share of total, for the KPI progress bars. */
+  protected toggleList(): void {
+    this.listOpen.update((open) => !open);
+  }
+
+  protected closeDrawers(): void {
+    this.listOpen.set(false);
+    this.clearSelection();
+  }
+
+  protected onEscape(): void {
+    if (this.listOpen()) {
+      this.listOpen.set(false);
+    } else {
+      this.clearSelection();
+    }
+  }
+
+  protected retry(): void {
+    this.store.retry();
+  }
+
   protected ratio(count: number): number {
     const total = this.kpis().total;
     return total ? count / total : 0;

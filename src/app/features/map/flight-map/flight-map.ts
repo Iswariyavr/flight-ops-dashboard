@@ -111,8 +111,15 @@ export class FlightMap {
 
   private initMap(): void {
     const el = this.mapEl().nativeElement;
+    this.map = L.map(el, {
+      center: INDIA_CENTER,
+      zoom: 5,
+      minZoom: 4,
+      maxZoom: 10,
+      zoomControl: false,
+    });
+    L.control.zoom({ position: 'bottomright' }).addTo(this.map);
 
-    this.map = L.map(el, { center: INDIA_CENTER, zoom: 5, minZoom: 4, maxZoom: 10 });
     L.tileLayer(TILES, {
       attribution: '&copy; OpenStreetMap contributors',
       subdomains: 'abc',

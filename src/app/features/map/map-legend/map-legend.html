@@ -1,1 +1,9 @@
-<p>map-legend works!</p>
+<ul class="legend" aria-label="Flight status legend">
+  @for (item of items(); track item.status) {
+    <li class="item" [class]="'is-' + item.cssClass">
+      <span class="dot" aria-hidden="true"></span>
+      {{ item.label }}
+      <span class="count mono">{{ item.count }}</span>
+    </li>
+  }
+</ul>
