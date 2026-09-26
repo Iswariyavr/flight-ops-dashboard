@@ -77,6 +77,15 @@
 
         <app-map-legend [counts]="statusCounts()" />
 
+        <app-map-toolbar
+          [playing]="playing()"
+          [speed]="speed()"
+          [elapsedMinutes]="elapsedMinutes()"
+          (playToggle)="togglePlayback()"
+          (resetPlayback)="resetPlayback()"
+          (speedChange)="setSpeed($event)"
+        />
+
         @if (loadStatus() === 'loading') {
           <div class="map-overlay" role="status">
             <div class="overlay-card">
