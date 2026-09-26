@@ -10,7 +10,8 @@
     "lint": "ng lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint:fix": "ng lint --fix"
+    "lint:fix": "ng lint --fix",
+    "test:ci": "ng test --watch=false"
   },
   "private": true,
   "packageManager": "npm@11.19.0",

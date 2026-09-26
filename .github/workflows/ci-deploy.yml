@@ -1,0 +1,60 @@
+name: CI & Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npx ng test --watch=false
+
+      - name: Build
+        run: npx ng build --base-href /flight-ops-dashboard/
+
+      # GitHub Pages has no SPA routing: serve index.html for unknown paths
+      # so deep links like /ops/flight/ai-889 work after a refresh.
+      - name: SPA fallback
+        run: cp dist/flight-ops-dashboard/browser/index.html dist/flight-ops-dashboard/browser/404.html
+
+      - name: Upload site
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/flight-ops-dashboard/browser
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
